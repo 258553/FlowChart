@@ -4,7 +4,7 @@
 
 提供了三种流程图的基本图形，通过拖动创建图形
 
-![image-20240912105540997](.\pics\image-20240912105540997.png)
+![image](https://github.com/258553/FlowChart/blob/master/pics/image-20240912105540997.png)
 
 #### 2、工具栏
 
@@ -21,15 +21,15 @@
 
 - 可以拖动图元,拖动图元时更新图元间的连线
 
-  ![Snipaste_2024-09-12_11-12-22](D:\Desktop\FlowChart\pics\Snipaste_2024-09-12_11-12-22.png)
+  ![image](https://github.com/258553/FlowChart/blob/master/pics/Snipaste_2024-09-12_11-12-22.png)
 
-  ![Snipaste_2024-09-12_11-12-29](D:\Desktop\FlowChart\pics\Snipaste_2024-09-12_11-12-29.png)
+  ![image](https://github.com/258553/FlowChart/blob/master/pics/Snipaste_2024-09-12_11-12-29.png)
 
 - 双击图元，弹出输入框，可以添加文字，输入框失去焦点时关闭
 
-![Snipaste_2024-09-12_11-05-04](D:\Desktop\FlowChart\pics\Snipaste_2024-09-12_11-05-04.png)
+![image](https://github.com/258553/FlowChart/blob/master/pics/Snipaste_2024-09-12_11-05-04.png)
 
-![Snipaste_2024-09-12_11-05-51](D:\Desktop\FlowChart\pics\Snipaste_2024-09-12_11-05-51.png)
+![image](https://github.com/258553/FlowChart/blob/master/pics/Snipaste_2024-09-12_11-05-51.png)
 
 - 选中图元后按Delete键删除图形及其连线
 
