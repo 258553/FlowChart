@@ -1,0 +1,13 @@
+﻿  Reading Qt configuration (D:/software/Qt/6.2.4/msvc2019_64/bin/qmake)
+  flowchart_graphics_item_base.cpp
+  flowchart_link.cpp
+  flowchart_view.cpp
+  flowchart_edit.cpp
+  flowchart_graphics_item.cpp
+  flowchart.cpp
+  flowchart_scene.cpp
+  main.cpp
+  qrc_FlowChart.cpp
+  moc_flowchart.cpp
+  moc_flowchart_edit.cpp
+  FlowChart.vcxproj -> D:\Desktop\FlowChart\x64\Debug\FlowChart.exe
