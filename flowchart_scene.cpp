@@ -2,7 +2,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <limits>
 #include <queue>
-
+#include <unordered_set>
 #include <QElapsedTimer>
 // 初始化编辑框
 void FlowChartScene::InitLineEdit()
@@ -17,9 +17,25 @@ void FlowChartScene::DeleteItem()
 {
 	qDebug() << "删除项";
 	QList<QGraphicsItem*>select_items = this->selectedItems();
-	//qDebug() << "共" << items.size() << "项";
+	//QList<QGraphicsItem*>select_items = this->items();
+	std::unordered_set<int> deleted_link;//保存已经删除的连线的下标
+	foreach(QGraphicsItem * curItem, select_items) {
+		qDebug()<<curItem;
+	}
+
+	qDebug() << "共" << select_items.size() << "项";
 	for (int i = 0; i < select_items.size(); i++) {
-		FlowChartGraphicsItem* select_item = dynamic_cast<FlowChartGraphicsItem*>(select_items.at(i));
+		//qDebug()<<select_items.at(i);
+		//已经删除的连线无需判断
+		if (deleted_link.find(i) != deleted_link.end()) {
+			continue;
+		}
+		QGraphicsItem* curItem = select_items.at(i);
+		if (curItem == nullptr) {
+			continue;
+		}
+		qDebug() << curItem;
+		FlowChartGraphicsItem* select_item = dynamic_cast<FlowChartGraphicsItem*>(curItem);
 		if (nullptr == select_item) {
 			qDebug() << "非此类型";
 			continue;
@@ -34,11 +50,15 @@ void FlowChartScene::DeleteItem()
 			//获取一条连线
 			FlowChartLink* link = dynamic_cast<FlowChartLink*> (link_start);
 			if (link != nullptr) {
-				FlowChartGraphicsItem* end_item = link->getEnd();			//获取连线终点
+				FlowChartGraphicsItem* end_item = link->getEnd();		//获取连线终点
 				//end_item->linkList_end.indexOf(link);
 				end_item->linkList_end.removeOne(link);				//在终点项中删除连线
+				deleted_link.insert(select_items.indexOf(link));
 				this->removeItem(link);							//将连线从视图中删除
 				delete link;											//释放连线的内存
+				link = nullptr;
+				
+				
 			}
 
 		}
@@ -48,11 +68,13 @@ void FlowChartScene::DeleteItem()
 			//获取一条连线
 			FlowChartLink* link = dynamic_cast<FlowChartLink*> (link_end);
 			if (link != nullptr) {
-				FlowChartGraphicsItem* end_item = link->getStart();		//获取连线终点
+				FlowChartGraphicsItem* start_item = link->getStart();	//获取连线起点
 				//end_item->linkList_end.indexOf(link);
-				end_item->linkList_start.removeOne(link);				//在终点项中删除连线
+				start_item->linkList_start.removeOne(link);			//在终点项中删除连线
+				deleted_link.insert(select_items.indexOf(link));
 				this->removeItem(link);							//将连线从视图中删除
 				delete link;											//释放连线的内存
+				link = nullptr;
 			}
 
 		}
@@ -60,16 +82,19 @@ void FlowChartScene::DeleteItem()
 			FlowChartGraphicsRectItem* item_ = dynamic_cast<FlowChartGraphicsRectItem*>(select_item);
 			this->removeItem(item_);
 			delete item_;
+			item_ = nullptr;
 		}
 		else if (select_item->getItemType() == ItemType::Condition) {
 			FlowChartGraphicsConditionItem* item_ = dynamic_cast<FlowChartGraphicsConditionItem*>(select_item);
 			this->removeItem(item_);
 			delete item_;
+			item_ = nullptr;
 		}
 		else if (select_item->getItemType() == ItemType::Start_End) {
 			FlowChartGraphicsStartItem* item_ = dynamic_cast<FlowChartGraphicsStartItem*>(select_item);
 			this->removeItem(item_);
 			delete item_;
+			item_ = nullptr;
 		}
 	}
 }
@@ -471,6 +496,8 @@ void FlowChartScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 	}
 	else if (mode_ == FlowChartCursor::DrawLinkCursor && temp_line_ != nullptr) {
 		this->removeItem(temp_line_);
+		delete temp_line_;
+		temp_line_ = nullptr;
 		QList<QGraphicsItem*>items = this->items();
 		if (items.size() > 1) {
 			FlowChartGraphicsItem* startItem = nullptr;
@@ -514,7 +541,7 @@ void FlowChartScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 				}
 			}
 
-			if (endItem != nullptr) {
+			if (startItem != nullptr && endItem != nullptr) {
 				//qDebug() << QString("endItem=>(%1,%2)").arg(endItem->getItemCenter().x()).arg(endItem->getItemCenter().y());
 				qDebug() << "创建连线";
 				FlowChartLink* link = new FlowChartLink();
@@ -524,17 +551,21 @@ void FlowChartScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 				{
 					qDebug() << "空连线";
 				}
-				link->setPath(path);
-				link->setStart_End(startItem, endItem);
+				else {
+					link->setPath(path);
+					link->setStart_End(startItem, endItem);
 
-				startItem->linkList_start.append(link);
-				endItem->linkList_end.append(link);
-				this->addItem(link);
+					startItem->linkList_start.append(link);
+					endItem->linkList_end.append(link);
+					this->addItem(link);
+				}
+			}
+			for (int i = 0; i < this->items().size(); i++) {
+				qDebug() << this->items().at(i);
 			}
 		}
-		this->removeItem(temp_line_);
-		delete temp_line_;
-		temp_line_ = nullptr;
+		//this->removeItem(temp_line_);
+		
 	}
 }
 
@@ -577,9 +608,11 @@ void FlowChartScene::dragMoveEvent(QGraphicsSceneDragDropEvent* event) {
 }
 
 void FlowChartScene::dragLeaveEvent(QGraphicsSceneDragDropEvent* event) {
+	qDebug() << "dragLeaveEvent";
 	if (flow_item_temp_ != nullptr) {
 		this->removeItem(flow_item_temp_);
 		delete flow_item_temp_;
+		flow_item_temp_ = nullptr;
 		qDebug() << "删除临时图元";
 	}
 	else {
@@ -589,13 +622,14 @@ void FlowChartScene::dragLeaveEvent(QGraphicsSceneDragDropEvent* event) {
 
 void FlowChartScene::dropEvent(QGraphicsSceneDragDropEvent* event)
 {
+	qDebug() << "dropEvent";
 	if (event->source() == widget_) {
 		event->ignore();
 		return QGraphicsScene::dragEnterEvent(event);
 	}
 	else {
 		flow_item_temp_ = nullptr;
-		event->acceptProposedAction();
+		//event->acceptProposedAction();
 	}
 
 }
