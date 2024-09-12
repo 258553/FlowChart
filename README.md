@@ -8,7 +8,7 @@
 
 #### 2、工具栏
 
-![Snipaste_2024-09-12_10-57-04](.\pics\Snipaste_2024-09-12_10-57-04.png)
+![image](https://github.com/258553/FlowChart/blob/master/pics/Snipaste_2024-09-12_10-57-04.png)
 
 - 保存按钮，将绘制的图形以图片形式保存
 - 形状按钮，设置是否显示形状的菜单
@@ -25,7 +25,7 @@
 
   ![Snipaste_2024-09-12_11-12-29](D:\Desktop\FlowChart\pics\Snipaste_2024-09-12_11-12-29.png)
 
-- 双击图元，弹出文本框，可以添加文字
+- 双击图元，弹出输入框，可以添加文字，输入框失去焦点时关闭
 
 ![Snipaste_2024-09-12_11-05-04](D:\Desktop\FlowChart\pics\Snipaste_2024-09-12_11-05-04.png)
 
